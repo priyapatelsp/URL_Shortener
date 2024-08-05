@@ -1,0 +1,4 @@
+{
+    "mongoURL": "<ENTER YOUR OWN MONGODB DETAILS ",
+    "baseURL":"http://localhost:8080"
+}

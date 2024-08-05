@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener - by Priya Patel</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #4a90e2, #50e3c2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 3em;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            margin: 0;
+        }
+        .header p {
+            font-size: 18px;
+            color: #ffffff;
+            margin: 5px 0 0;
+        }
+        .container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .container:hover {
+            transform: scale(1.02);
+        }
+        input[type="text"] {
+            width: calc(100% - 24px);
+            padding: 15px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: #4a90e2;
+            outline: none;
+        }
+        button {
+            padding: 15px 30px;
+            background-color: #4a90e2;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        button:hover {
+            background-color: #357ABD;
+            transform: translateY(-2px);
+        }
+        .view {
+            margin-top: 20px;
+        }
+        .view p {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #333;
+            font-weight: 500;
+        }
+        .view a {
+            color: #4a90e2;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+        .view a:hover {
+            color: #357ABD;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        .footer a {
+            color: #4a90e2;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>URL Shortener</h1>
+        <p>Your one-stop tool to transform long URLs into short, shareable links effortlessly.</p>
+    </div>
+    <div class="container">
+        <form id="urlForm">
+            <input type="text" id="urlInput" placeholder="Enter your long URL here" required>
+            <button type="button" id="btn">Shorten URL</button>
+        </form>
+        <div class="view">
+            <!-- Shortened URL will appear here -->
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Created by <a href="https://www.linkedin.com/in/priyapatelsp/" target="_blank">Priya Patel</a></p>
+    </div>
+
+    <script type="text/javascript">
+        $('#btn').click(function() {
+            const urlInput = $('#urlInput').val().trim();
+            if (!urlInput) {
+                $('.view').html('<p class="error">Please enter a valid URL.</p>');
+                return;
+            }
+
+            $.ajax({
+                url: '/api/url/shorten',
+                dataType: 'json',
+                type: 'post',
+                data: JSON.stringify({ longUrl: urlInput }),
+                contentType: "application/json",
+                success: function(data) {
+                    if (data.shortUrl) {
+                        $('.view').html(`<p>Your shortened URL:</p><a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>`);
+                    } else {
+                        $('.view').html('<p class="error">Failed to shorten URL. Please try again.</p>');
+                    }
+                },
+                error: function(jqXhr, textStatus, errorThrown) {
+                    $('.view').html('<p class="error">Please enter the correct URL & Try Again!</p>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
